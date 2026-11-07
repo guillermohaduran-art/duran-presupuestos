@@ -1,0 +1,4 @@
+# Nunca subir el generador de códigos: tiene la llave privada
+generador*.html
+*.jwk.json
+.DS_Store
