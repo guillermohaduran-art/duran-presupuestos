@@ -1,4 +1,4 @@
-const C="duran-v10",PDFLIB="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+const C="duran-v11",PDFLIB="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(async c=>{await c.addAll(["./","./index.html","./manifest.webmanifest","./privacidad.html"]);try{await c.put(PDFLIB,await fetch(PDFLIB,{mode:"no-cors"}))}catch(x){}}))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{
