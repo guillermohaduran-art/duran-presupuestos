@@ -1,4 +1,4 @@
-# Durán Presupuestos
+# Presupuestos
 
 App de presupuestos para oficios (aire acondicionado, electricidad, gas, plomería y oficios propios).
 Funciona desde el navegador del celular y se agrega a la pantalla de inicio. Todos los datos quedan en el teléfono del usuario.
