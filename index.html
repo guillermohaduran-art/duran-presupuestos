@@ -451,7 +451,7 @@ header{position:sticky;top:0;z-index:40;margin:-16px -16px 6px;padding:calc(10px
   <div class="chips" id="cgc" style="margin-bottom:8px"></div>
   <div class="card"><input id="cgq" data-p="hS" autocomplete="off"><div style="text-align:center;margin-top:10px"><button class="chip" id="cgAdd" type="button" style="flex:none;min-width:0;padding:12px 26px"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i="addC">Agregar cliente</span></button></div><div id="cgl" style="margin-top:10px"></div><div class="sub" id="cge" data-i="cE" style="padding-top:8px"></div></div>
 </div>
-<div class="qt" id="ver" style="font-size:11px;margin-top:10px">v 2026-10-09 · 133</div>
+<div class="qt" id="ver" style="font-size:11px;margin-top:10px">v 2026-10-09 · 134</div>
 <button class="go" id="pkb" type="button" style="margin-top:14px"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"/></svg><span data-i="pk">Desbloquear app completa</span></button>
 <div id="mns" hidden>
   <div class="sh">
@@ -916,7 +916,7 @@ async function genPdf(redo,when,pnIn){
   y=pdfFirma(doc,Math.max(y,0)+(cond?0:8),W);
   doc.setFont("helvetica","bold");doc.setFontSize(16);doc.setTextColor(20);
   doc.text(tr("pV1")+" "+days+" "+(days===1?tr("pD1"):tr("pDn")),W/2,285,{align:"center"});
-  if(pv){showPv(doc,"q",function(){genPdf(false,undefined)});return}
+  if(pv){showPdfPv(doc,"q",function(){genPdf(false,undefined)});return}
   name=safeName(tr("pFile")+" "+tr(tipo)+(cli?" - "+cli:""))||"Presupuesto";name+=".pdf";
   blob=doc.output("blob");
   }catch(e){say2(tr("m7")+" (pdf: "+((e&&e.message)||e)+")");return}
@@ -1169,12 +1169,12 @@ function setPv(i,id,pr,force){var inp=$("md"+i),pe=$("mp"+i);if(!inp)return;inp.
   if(id&&pr!==undefined&&pr!==""&&(force||!pe.value.trim()||pe.dataset.auto===pe.value)){pe.value=pr;pe.dataset.auto=String(pr);$("ms"+i).textContent=fmt(num("mq"+i)*num("mp"+i));calc()}
   pvNote(i);save()}
 function pvNote(i){var e=$("mv"+i),inp=$("md"+i);if(!e||!inp)return;var p=UNL&&inp.dataset.pv?pvById(inp.dataset.pv):null;
-  if(!p){e.style.display="none";e.innerHTML="";return}
+  if(!p){e.style.display="none";e.innerHTML="";e.dataset.h="";return}
   var o=offers(inp.value),mine=null;o.forEach(function(x){if(x.pv.id===p.id)mine=x});
   var h=SI("store")+esc(p.name)+(mine?" · "+fmt(parseFloat(mine.m.p)):""),best=o[0];
   if(best&&mine&&best.pv.id!==p.id&&parseFloat(best.m.p)<parseFloat(mine.m.p))
     h+='<div style="margin-top:6px;padding:8px 10px;border-radius:10px;background:#fff3cd;color:#5c4400;display:flex;align-items:center;justify-content:space-between;gap:8px"><span>'+SI("tag")+esc(tr("pvCh2").replace("{p}",best.pv.name))+": <b>"+fmt(parseFloat(best.m.p))+'</b></span><button type="button" class="hb pvu" style="flex:none">'+esc(tr("pvUse"))+"</button></div>";
-  e.innerHTML=h;e.style.display="block";
+  if(e.dataset.h!==h){e.innerHTML=h;e.dataset.h=h}e.style.display="block";   // v138: si no cambió, no se redibuja (así el botón "Usar" no desaparece justo cuando lo tocás)
   var b=e.querySelector(".pvu");if(b)b.onclick=function(){setPv(i,best.pv.id,best.m.p,true)}}
 function showPv(){goHome();$("home").hidden=true;$("pvp").hidden=false;$("pvq").value="";renderPv();setNav("more");window.scrollTo(0,0)}
 function renderPv(){var box=$("pvl");box.innerHTML="";var q=($("pvq").value||"").trim().toLowerCase();
@@ -1764,7 +1764,8 @@ function dscLabel(){var v=num("dsc");return tr("pDsc")+(DSCT==="%"?" ("+String(v
 $("dsc").addEventListener("input",calc);
 /* --- vista previa --- */
 var PVW=false,PVGO=null;
-async function showPv(doc,kind,go){var cs=await doc.render(4),box=$("pvP");box.innerHTML="";cs.forEach(function(c){box.appendChild(c)});
+async function showPdfPv(doc,kind,go){   // v137: antes se llamaba igual que la pantalla de Proveedores y la pisaba
+ var cs=await doc.render(4),box=$("pvP");box.innerHTML="";cs.forEach(function(c){box.appendChild(c)});
   $("pvTt").textContent=tr("vpT");$("pvN").textContent=tr(kind==="r"?"pvNr":"vpN");try{$("tpToast").hidden=true}catch(e){}$("prvBack").textContent=tr("pvBack");$("pvGo").textContent=tr("pvGo");PVGO=go;$("pvw").hidden=false;box.scrollTop=0}
 function closePv(){$("pvw").hidden=true;$("pvP").innerHTML=""}
 $("pvx").onclick=$("prvBack").onclick=closePv;$("pvGo").onclick=function(){var g=PVGO;closePv();if(g)g()};
@@ -1845,7 +1846,7 @@ function openRecibo(k,e){if(!prem())return;$("tpTt").innerHTML=SI("file",1)+esc(
   b.querySelectorAll("#rcK button").forEach(function(x){x.style.fontSize="13px";x.onclick=function(){setK(x.dataset.v)}});setK(kind);
   function data(){var m=parseFloat($("rc_m").value)||0;if(!(m>0)){var ms=$("rc_msg");ms.textContent=tr("rcBad");ms.style.display="block";return null}
     return {n:(parseInt(ls("duran_rseq"))||0)+1,t:Date.now(),m:m,kind:kind,med:$("rc_med").value,prev:paid}}
-  $("rc_pv").onclick=function(){var d=data();if(!d)return;var doc=new CDoc();drawRecibo(doc,k,e,d);showPv(doc,"r",function(){$("rc_go").click()})};
+  $("rc_pv").onclick=function(){var d=data();if(!d)return;var doc=new CDoc();drawRecibo(doc,k,e,d);showPdfPv(doc,"r",function(){$("rc_go").click()})};
   $("rc_go").onclick=async function(){var d=data();if(!d)return;if(!window.jspdf){$("rc_msg").textContent=tr("m2");$("rc_msg").style.display="block";return}
     var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});drawRecibo(doc,k,e,d);var blob=doc.output("blob"),name=(safeName(tr("rcFile")+" R-"+String(d.n).padStart(6,"0")+(e.cli?" - "+e.cli:""))||"Recibo")+".pdf";
     var p=deliverPdf(blob,name,rcMsg(e,d.m));   // el menú de compartir se abre mientras el toque está fresco
