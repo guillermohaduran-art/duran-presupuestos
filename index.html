@@ -451,7 +451,7 @@ header{position:sticky;top:0;z-index:40;margin:-16px -16px 6px;padding:calc(10px
   <div class="chips" id="cgc" style="margin-bottom:8px"></div>
   <div class="card"><input id="cgq" data-p="hS" autocomplete="off"><div style="text-align:center;margin-top:10px"><button class="chip" id="cgAdd" type="button" style="flex:none;min-width:0;padding:12px 26px"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i="addC">Agregar cliente</span></button></div><div id="cgl" style="margin-top:10px"></div><div class="sub" id="cge" data-i="cE" style="padding-top:8px"></div></div>
 </div>
-<div class="qt" id="ver" style="font-size:11px;margin-top:10px">v 2026-10-09 · 132</div>
+<div class="qt" id="ver" style="font-size:11px;margin-top:10px">v 2026-10-09 · 133</div>
 <button class="go" id="pkb" type="button" style="margin-top:14px"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"/></svg><span data-i="pk">Desbloquear app completa</span></button>
 <div id="mns" hidden>
   <div class="sh">
@@ -1623,7 +1623,7 @@ function renderBk(){try{var t=parseInt(ls("duran_cs_t"))||0,sn=parseInt(ls("dura
 $("bkrGo").onclick=function(){openCs()};$("bkrLt").onclick=function(){ls("duran_bk_sn",String(NOW()+7*864e5));renderBk()};
 /* 5) primeros pasos */
 function renderObd(){try{var c=$("obd");if(ls("duran_obd_x")==="1"){c.hidden=true;return}
-  var s=[[!!(logo&&!logo.def),"ob1",function(){$("logoW").click()}],[!!((MY&&MY.nom)||"").trim(),"ob2",function(){document.querySelector('#nav [data-n="my"]').click()}],[allQ()>0,"ob3",function(){openTrade(VL()[0])}]];
+  var s=[[!!(logo&&!logo.def),"ob1",function(){$("logoW").click()}],[!!(((MY&&MY.nom)||"")+((MY&&MY.tel)||"")+((MY&&MY.cel)||"")).trim(),"ob2",function(){document.querySelector('#nav [data-n="my"]').click()}],[allQ()>0,"ob3",function(){openTrade(curK())}]];
   var n=s.filter(function(x){return x[0]}).length;if(n===3){c.hidden=true;return}c.hidden=false;
   $("obBar").style.width=(n/3*100)+"%";$("obC").textContent=tr("obP").replace("{n}",n);var L0=$("obL");L0.innerHTML="";
   s.forEach(function(x,i){var b=document.createElement("button");b.type="button";b.className="obs"+(x[0]?" ok":"");b.innerHTML='<span class="on">'+(x[0]?"✓":(i+1))+"</span><span>"+esc(tr(x[1]))+"</span>"+(x[0]?"":'<span class="gt">›</span>');if(!x[0])b.onclick=x[2];L0.appendChild(b)})}catch(e){}}
@@ -1990,7 +1990,15 @@ function qkSel(k){try{$("ttl").blur()}catch(e){}ls("duran_lastk",k);try{renderRe
 function qkGoTx(){var k=curK();try{$("qkGo").innerHTML=SI("plus")+esc(tr("qkGo").replace("{o}",TN(k)))}catch(e){}
   try{var o=VL().length>1?' <span class="secof">'+IH(k)+" "+esc(TN(k))+"</span>":"";$("stm").querySelector("h3").innerHTML=esc(tr("stT"))+o;$("rec").querySelector("h3").innerHTML=esc(tr("recT"))+o}catch(e){}}
 $("qkGo").onclick=function(){openTrade(curK())};
-(function(){var o=hdrSync;hdrSync=function(){var r=o.apply(this,arguments);try{qkGoTx()}catch(e){}return r}})();
+(function(){var o=hdrSync;hdrSync=function(){var r=o.apply(this,arguments);try{qkGoTx()}catch(e){}try{renderObd()}catch(e){}return r}})();
+/* v135: la primera vez, el nombre y el logo van a los datos generales (para todos los oficios); recién cuando ya hay uno general, cambiarlo dentro de un oficio lo separa.
+   Arreglo para quien ya cargó su primer logo o nombre y quedó solo en un oficio: pasa a ser el general. */
+(function(){try{if(ls("duran_brfix1"))return;ls("duran_brfix1","1");if(BRS.length!==1)return;var b=BRS[0];if(b.tel||b.cel)return;
+  var gl=!(logo&&!logo.def),gn=!genTtl().trim(),ch=false;
+  if(gl&&b.logo){logo={data:b.logo.data,w:b.logo.w,h:b.logo.h};try{ls("duran_logo",JSON.stringify(logo))}catch(e){}try{prepLogoPdf()}catch(e){}b.logo=null;ch=true}
+  if(gn&&(b.name||"").trim()){ls("duran_title",b.name);b.name="";ch=true}
+  if(!ch)return;if(!b.logo&&!(b.name||"").trim()){BRS=[];Object.keys(BRK).forEach(function(k){delete BRK[k]})}saveBR();try{showLogo()}catch(e){}hdrSync()}catch(e){}})();
+try{["myok","myx"].forEach(function(i){$(i).addEventListener("click",function(){try{renderObd()}catch(e){}})})}catch(e){}
 (function(){var o=openTrade;openTrade=function(k){try{$("ttl").blur()}catch(e){}ls("duran_lastk",k);var r=o.apply(this,arguments);try{hdrSync()}catch(e){}return r}})();
 (function(){var o=goHome;goHome=function(){try{$("ttl").blur()}catch(e){}var r=o.apply(this,arguments);try{hdrSync()}catch(e){}return r}})();
 (function(){var o=renderHomeX;renderHomeX=function(){var r=o.apply(this,arguments);try{hdrSync()}catch(e){}return r}})();
@@ -2001,9 +2009,9 @@ $("qkGo").onclick=function(){openTrade(curK())};
 function brOwn(){var k=trade||curK();if(!k)return null;var b=brOf(k);if(b)return b;
   var g=logo&&!logo.def?logo:null;b={id:"b"+Date.now().toString(36),name:ls("duran_title_g")||genTtl(),tel:"",cel:"",logo:g?{data:g.data,w:g.w,h:g.h,pdf:LOGO_PDF||null}:null};
   BRS.push(b);BRK[k]=b.id;ls("duran_brs",JSON.stringify(BRS));ls("duran_brk",JSON.stringify(BRK));HB=b.id;try{renderBr();brBadge()}catch(e){}return b}
-$("ttl").addEventListener("input",function(){var b=HB&&brById(HB);if(!b)b=brOwn();if(!b)return;b.name=this.value;ls("duran_brs",JSON.stringify(BRS));ls("duran_title",ls("duran_title_g")||"")},false);
+$("ttl").addEventListener("input",function(){var b=HB&&brById(HB);if(!b&&(ls("duran_title_g")||"").trim())b=brOwn();if(!b)return;b.name=this.value;ls("duran_brs",JSON.stringify(BRS));ls("duran_title",ls("duran_title_g")||"")},false);
 $("ttl").addEventListener("focus",function(){ls("duran_title_g",genTtl())});
-(function(){var f=$("logoW").querySelector('input[type="file"]');if(!f)return;var o=f.onchange;f.onchange=function(ev){var b=HB&&brById(HB);if(!b)b=brOwn();if(!b)return o.apply(this,arguments);
+(function(){var f=$("logoW").querySelector('input[type="file"]');if(!f)return;var o=f.onchange;f.onchange=function(ev){var b=HB&&brById(HB);if(!b&&logo&&!logo.def)b=brOwn();if(!b)return o.apply(this,arguments);
   var fl=ev.target.files[0];if(!fl)return;brLogo(fl,function(l){b.logo=l;saveBR();renderBr();brBadge()});ev.target.value=""}})();
 try{hdrSync()}catch(e){}
 /* v126: seguimiento: presupuestos sin respuesta hace 3 días o más (y todavía vigentes) aparecen en Inicio con un botón para escribirle por WhatsApp */
