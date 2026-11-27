@@ -451,7 +451,7 @@ header{position:sticky;top:0;z-index:40;margin:-16px -16px 6px;padding:calc(10px
   <div class="chips" id="cgc" style="margin-bottom:8px"></div>
   <div class="card"><input id="cgq" data-p="hS" autocomplete="off"><div style="text-align:center;margin-top:10px"><button class="chip" id="cgAdd" type="button" style="flex:none;min-width:0;padding:12px 26px"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i="addC">Agregar cliente</span></button></div><div id="cgl" style="margin-top:10px"></div><div class="sub" id="cge" data-i="cE" style="padding-top:8px"></div></div>
 </div>
-<div class="qt" id="ver" style="font-size:11px;margin-top:10px">v 2026-10-09 · 130</div>
+<div class="qt" id="ver" style="font-size:11px;margin-top:10px">v 2026-10-09 · 131</div>
 <button class="go" id="pkb" type="button" style="margin-top:14px"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"/></svg><span data-i="pk">Desbloquear app completa</span></button>
 <div id="mns" hidden>
   <div class="sh">
@@ -1035,7 +1035,12 @@ function renderHist(){
 var FCE=null,FCK=null;
 function noteT(t){try{var e=$("tpToast");$("tpToastT").textContent=t;var u=$("tpToastU");u.textContent=tr("okB");u.onclick=function(){e.hidden=true};e.hidden=false;clearTimeout(TPU);TPU=setTimeout(function(){e.hidden=true},6000)}catch(x){}}
 function openFicha(e){FCE=e;FCK=trade;renderFicha();$("fch").hidden=false;$("fch").scrollTop=0}
-function closeFicha(){$("fch").hidden=true;FCE=null}
+function closeFicha(){$("fch").hidden=true;FCE=null;var o=FCORIG;FCORIG=null;
+  if(o){RET=null;setBack(false);if(o.v==="home"){goHome();window.scrollTo(0,0)}else{showPres(o.q,o.fromCli);if(o.ngf){NGF=o.ngf;renderAll()}window.scrollTo(0,o.y||0)}}}
+/* v133: si la ficha se abrió desde Inicio o desde la lista de Presupuestos, "Volver" vuelve ahí directo (sin pasar por el historial del oficio) */
+var FCORIG=null;
+function ficFrom(k,e){var pres=!$("allp").hidden,o=pres?{v:"pres",q:$("ngq").value,fromCli:FROMCLI,ngf:NGF,y:window.scrollY}:{v:"home"};
+  openFrom(k,e,e.n?qno(k,e.n):(e.cli||""));setTimeout(function(){try{if(trade===k){openFicha(e);FCORIG=o}}catch(z){}},60)}
 function renderFicha(){var e=FCE,k=FCK;if(!e)return;if(!(HS[k]||[]).some(function(x){return x===e})){closeFicha();return}
   var sk=stKey(e),exp=e.t+(e.days||7)*86400000,b=$("fcb");b.innerHTML="";
   var hd=document.createElement("div");hd.className="card fch1";
@@ -1299,7 +1304,7 @@ function renderRecent(){renderHomeX();var box=$("recl");if(!box)return;var a=[],
     var n=document.createElement("div");n.className="hn";n.innerHTML=IH(x.k)+" "+esc(e.cli||tr("hN"));
     var m=document.createElement("div");m.className="hm";m.textContent=(e.n?qno(x.k,e.n)+" · ":"")+new Date(e.t).toLocaleDateString(LOC[L])+" · "+fmt(e.tot)+" · "+statTxt(e);
     l.appendChild(n);l.appendChild(m);var go=document.createElement("span");go.textContent="›";go.style.cssText="font-size:24px;color:var(--mu);padding:0 4px";
-    r.appendChild(l);r.appendChild(go);r.onclick=function(){openFrom(x.k,e,e.n?qno(x.k,e.n):(e.cli||""));setTimeout(function(){try{if(trade===x.k)openFicha(e)}catch(z){}},60)};box.appendChild(r)});
+    r.appendChild(l);r.appendChild(go);r.onclick=function(){ficFrom(x.k,e)};box.appendChild(r)});
   $("wfN").textContent=($("ttl").value||"").trim()||tr("ttlP")}
 
 function renderHomeX(){try{var nM=UNL?mtDue().length:0,md=$("mtday");md.hidden=!nM;if(nM)md.innerHTML=SI("chk")+"<span>"+esc(tr("mtHome").replace("{n}",nM))+'</span><span class="gt">›</span>';var nT=UNL?agToday():0,ad=$("agday");ad.hidden=!nT;if(nT)ad.innerHTML=SI("cal")+"<span>"+esc(nT===1?tr("agTd1"):tr("agTd").replace("{n}",nT))+'</span><span class="gt">›</span>';
@@ -2350,7 +2355,7 @@ function renderAll(){
     var m=document.createElement("div");m.className="hm";
     m.textContent=(e.n?qno(x.k,e.n)+" · ":"")+new Date(e.t).toLocaleDateString(LOC[L])+" · "+tr(e.tab)+" · "+fmt(e.tot)+" · "+statTxt(e);
     l.appendChild(n);l.appendChild(m);r.appendChild(l);
-    r.onclick=function(){openFrom(x.k,e,e.n?qno(x.k,e.n):(e.cli||""));setTimeout(function(){try{if(trade===x.k)openFicha(e)}catch(z){}},60)};
+    r.onclick=function(){ficFrom(x.k,e)};
     box.appendChild(r)})}
 /* agenda de clientes: cada oficio guarda sus clientes al generar un presupuesto; no se borran si se elimina el presupuesto */
 var CL={};try{CL=JSON.parse(ls("duran_cl")||"{}")}catch(e){CL={}}
