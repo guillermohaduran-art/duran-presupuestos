@@ -45,9 +45,13 @@ header{gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:
 .sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--bd);display:inline-block;cursor:pointer}
 .bgbtn{position:relative;display:block;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;margin-top:8px;text-align:center;font-size:14px;color:var(--tx);cursor:pointer;background:var(--bg)}
 #logoW{cursor:pointer}
-#splash{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(#f5fafe,#a6ccf0);transition:opacity .4s;--sT:#0d3b78;--sT2:#1166c8;--sS:#4a5b70;--sCb:#fff;--sCbd:#d6e4f2;--sCt:#10233d;--sL:#1166c8;--sL2:#1fa3f0;--sRing:#e9f3fd;--sH:#6fa8e0}
+#splash{position:fixed;inset:0;bottom:auto;height:100vh;height:100lvh;min-height:100%;z-index:100;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(#f5fafe,#a6ccf0);transition:opacity .4s;--sT:#0d3b78;--sT2:#1166c8;--sS:#4a5b70;--sCb:#fff;--sCbd:#d6e4f2;--sCt:#10233d;--sL:#1166c8;--sL2:#1fa3f0;--sRing:#e9f3fd;--sH:#6fa8e0}
 @media(prefers-color-scheme:dark){#splash{background:linear-gradient(#0c5cbd,#05193c);--sT:#fff;--sT2:#2ab0ff;--sS:#dbe8f7;--sCb:rgba(255,255,255,.12);--sCbd:rgba(255,255,255,.3);--sCt:#fff;--sL:#fff;--sL2:#1fa3f0;--sRing:#0b4fa6;--sH:#3d78c4}}
 #splash.out{opacity:0;pointer-events:none}
+/* v139: mientras está la pantalla de inicio, todo el fondo (incluso lo que aparece cuando el celular estira la pantalla al abrir) tiene su mismo color */
+html.spl,html.spl body{background:#a6ccf0}
+@media(prefers-color-scheme:dark){html.spl,html.spl body{background:#05193c}}
+html.spl body>*:not(#splash){visibility:hidden}   /* lo de atrás no se ve mientras está la pantalla de inicio */
 #splash .spw{position:relative;z-index:1;width:100%;max-width:440px;padding:0 max(16px,4.5vw);box-sizing:border-box;display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:-11vh;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 #splash .splogo{height:min(17vh,32vw);width:auto;margin-bottom:min(2.6vh,12px)}
 #splash .sl1{stroke:var(--sL)}#splash .sl2{fill:var(--sL2);stroke:var(--sRing)}
@@ -292,7 +296,7 @@ header{position:sticky;top:0;z-index:40;margin:-16px -16px 6px;padding:calc(10px
 </style>
 </head>
 <body>
-<div id="splash"><div class="spw">
+<script>try{document.documentElement.classList.add("spl")}catch(e){}</script><div id="splash"><div class="spw">
  <svg class="splogo" viewBox="0 0 128 112" aria-hidden="true"><path class="sl1" d="M10 50 64 7l54 43" fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path class="sl1" d="M28 44v50a10 10 0 0 0 10 10h52a10 10 0 0 0 10-10V44" fill="none" stroke-width="10" stroke-linejoin="round"/><path class="sl1" d="M46 52h34M46 66h34M46 80h20" fill="none" stroke-width="8" stroke-linecap="round"/><circle class="sl2" cx="98" cy="84" r="23" stroke-width="6"/><text x="98" y="95" text-anchor="middle" font-size="32" font-weight="900" fill="#fff" font-family="Arial,Helvetica,sans-serif">$</text></svg>
  <div class="spt"><b id="spT1">PRESUPUESTÁ</b><b id="spT2">EN TU CELULAR</b></div>
  <p class="sps" id="spS">Armá tu presupuesto en minutos y envialo por WhatsApp.</p>
@@ -451,7 +455,7 @@ header{position:sticky;top:0;z-index:40;margin:-16px -16px 6px;padding:calc(10px
   <div class="chips" id="cgc" style="margin-bottom:8px"></div>
   <div class="card"><input id="cgq" data-p="hS" autocomplete="off"><div style="text-align:center;margin-top:10px"><button class="chip" id="cgAdd" type="button" style="flex:none;min-width:0;padding:12px 26px"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i="addC">Agregar cliente</span></button></div><div id="cgl" style="margin-top:10px"></div><div class="sub" id="cge" data-i="cE" style="padding-top:8px"></div></div>
 </div>
-<div class="qt" id="ver" style="font-size:11px;margin-top:10px">v 2026-10-09 · 134</div>
+<div class="qt" id="ver" style="font-size:11px;margin-top:10px">v 2026-10-09 · 135</div>
 <button class="go" id="pkb" type="button" style="margin-top:14px"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"/></svg><span data-i="pk">Desbloquear app completa</span></button>
 <div id="mns" hidden>
   <div class="sh">
@@ -2527,7 +2531,7 @@ applyLang();
   try{ok=!!window.claude||(document.referrer||"").indexOf("android-app://")===0||matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: fullscreen)").matches||/[?&]dev=1/.test(location.search)||/^(localhost|127\.)/.test(location.hostname);
     if(ok)ls("duran_app","1");else if(ls("duran_app")==="1")ok=true}catch(e){ok=true}
   /* versión web: ya no se muestra el cartel de Google Play */})();
-setTimeout(function(){var e=$("splash");e.classList.add("out");setTimeout(function(){e.remove()},450)},3000);
+setTimeout(function(){var e=$("splash");e.classList.add("out");document.documentElement.classList.remove("spl");setTimeout(function(){e.remove()},450)},3000);
 </script>
 </body>
 </html>
